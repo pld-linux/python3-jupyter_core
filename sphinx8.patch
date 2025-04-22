@@ -1,8 +1,11 @@
 --- jupyter_core-4.6.3/docs/conf.py.orig	2019-09-14 00:09:00.000000000 +0200
 +++ jupyter_core-4.6.3/docs/conf.py	2025-04-19 15:06:52.296934881 +0200
-@@ -294,4 +294,4 @@
+@@ -294,7 +294,7 @@
  
  
  # Example configuration for intersphinx: refer to the Python standard library.
--intersphinx_mapping = {'https://docs.python.org/3/': None}
+-intersphinx_mapping = {"https://docs.python.org/3/": None}
 +intersphinx_mapping = {"python": ("https://docs.python.org/3/", None)}
+ 
+
+ def setup(_):

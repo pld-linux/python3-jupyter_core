@@ -5,12 +5,12 @@
  
  }
 -complete -o default -o nospace -F _jupyter jupyter
-+complete -o default -o nospace -F _jupyter jupyter jupyter-2 jupyter-3
++complete -o default -o nospace -F _jupyter jupyter jupyter-3
 --- jupyter_core-4.5.0/examples/completions-zsh.orig	2017-08-05 11:25:59.000000000 +0200
 +++ jupyter_core-4.5.0/examples/completions-zsh	2019-09-29 13:18:28.779164072 +0200
 @@ -1,4 +1,4 @@
 -#compdef jupyter
-+#compdef jupyter jupyter-2 jupyter-3
++#compdef jupyter jupyter-3
  # A zsh autocompleter for jupyter.
  _jupyter() {
    IFS=$'\n'

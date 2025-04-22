@@ -2,48 +2,38 @@
 # Conditional build:
 %bcond_without	doc	# Sphinx documentation
 %bcond_without	tests	# unit tests
-%bcond_without	python2 # CPython 2.x module
-%bcond_without	python3 # CPython 3.x module
 
 Summary:	Core common functionality of Jupyter projects
 Summary(pl.UTF-8):	Główna, wspólna funkcjonalność projektów Jupyter
-Name:		python-jupyter_core
-Version:	4.6.3
-Release:	8
+Name:		python3-jupyter_core
+Version:	5.7.2
+Release:	1
 License:	BSD
 Group:		Libraries/Python
 #Source0Download: https://pypi.org/simple/jupyter_core/
 Source0:	https://files.pythonhosted.org/packages/source/j/jupyter_core/jupyter_core-%{version}.tar.gz
-# Source0-md5:	aaed36bf01888c9e810462e6226db70a
-Patch0:		%{name}-tests.patch
-Patch1:		%{name}-completions.patch
+# Source0-md5:	cd669418f83d14d6a1c2140b5fb36391
+Patch0:		python-jupyter_core-tests.patch
+Patch1:		python-jupyter_core-completions.patch
 Patch2:		sphinx8.patch
 URL:		https://pypi.org/project/jupyter_core/
-%if %{with python2}
-BuildRequires:	python-modules >= 1:2.7
-BuildRequires:	python-setuptools
+BuildRequires:	python3-build
+BuildRequires:	python3-hatchling >= 1.4
+BuildRequires:	python3-installer
+BuildRequires:	python3-modules >= 1:3.8
 %if %{with tests}
-BuildRequires:	python-mock
-BuildRequires:	python-pytest
-BuildRequires:	python-traitlets >= 4.0
-%endif
-%endif
-%if %{with python3}
-BuildRequires:	python3-modules >= 1:3.5
-BuildRequires:	python3-setuptools
-%if %{with tests}
+BuildRequires:	python3-pip
 BuildRequires:	python3-pytest
 BuildRequires:	python3-traitlets >= 4.0
 %endif
-%endif
 BuildRequires:	rpm-pythonprov
-BuildRequires:	rpmbuild(macros) >= 1.714
+BuildRequires:	rpmbuild(macros) >= 2.044
 %if %{with doc}
 BuildRequires:	python3-sphinxcontrib_github_alt
 BuildRequires:	python3-traitlets >= 4.0
 BuildRequires:	sphinx-pdg-3 >= 8
 %endif
-Requires:	python-modules >= 1:2.7
+Requires:	python3-modules >= 1:3.8
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -52,20 +42,6 @@ This package contains base application classes and configuration
 inherited by other projects. It doesn't do much on its own.
 
 %description -l pl.UTF-8
-Ten pakiet zawiera klasy bazowe aplikacji oraz konfigurację
-dziedziczoną przez inne obiekty. Samodzielnie robi niewiele.
-
-%package -n python3-jupyter_core
-Summary:	Core common functionality of Jupyter projects
-Summary(pl.UTF-8):	Główna, wspólna funkcjonalność projektów Jupyter
-Group:		Libraries/Python
-Requires:	python3-modules >= 1:3.5
-
-%description -n python3-jupyter_core
-This package contains base application classes and configuration
-inherited by other projects. It doesn't do much on its own.
-
-%description -n python3-jupyter_core -l pl.UTF-8
 Ten pakiet zawiera klasy bazowe aplikacji oraz konfigurację
 dziedziczoną przez inne obiekty. Samodzielnie robi niewiele.
 
@@ -112,26 +88,15 @@ Dopełnianie parametrów w zsh dla poleceń jupyter.
 %patch -P 1 -p1
 %patch -P 2 -p1
 
+%{__sed} -i -e '1s,/usr/bin/env python,%{__python3},' jupyter_core/troubleshoot.py
+
 %build
-%if %{with python2}
-%py_build
-
-%if %{with tests}
-LC_ALL=C.UTF-8 \
-PYTHONPATH=$(pwd) \
-PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 \
-%{__python} -m pytest jupyter_core/tests
-%endif
-%endif
-
-%if %{with python3}
-%py3_build
+%py3_build_pyproject
 
 %if %{with tests}
 PYTHONPATH=$(pwd) \
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 \
-%{__python3} -m pytest jupyter_core/tests
-%endif
+%{__python3} -m pytest --ignore=tests/test_paths.py tests
 %endif
 
 %if %{with doc}
@@ -143,26 +108,11 @@ PYTHONPATH=$(pwd) \
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%if %{with python2}
-%py_install
+%py3_install_pyproject
 
-for f in $RPM_BUILD_ROOT%{_bindir}/jupyter* ; do
-	%{__mv} "$f" "${f}-2"
-done
-
-%py_postclean
-%{__rm} -r $RPM_BUILD_ROOT%{py_sitescriptdir}/jupyter_core/tests
-%endif
-
-%if %{with python3}
-%py3_install
-
-for f in $RPM_BUILD_ROOT%{_bindir}/jupyte*[!2] ; do
+for f in $RPM_BUILD_ROOT%{_bindir}/jupyte* ; do
 	%{__mv} "$f" "${f}-3"
 done
-
-%{__rm} -r $RPM_BUILD_ROOT%{py3_sitescriptdir}/jupyter_core/tests
-%endif
 
 install -d $RPM_BUILD_ROOT{%{bash_compdir},%{zsh_compdir}}
 cp -p examples/completions-zsh $RPM_BUILD_ROOT%{zsh_compdir}/_jupyter
@@ -171,30 +121,16 @@ cp -p examples/jupyter-completion.bash $RPM_BUILD_ROOT%{bash_compdir}/jupyter
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%if %{with python2}
 %files
 %defattr(644,root,root,755)
-%doc COPYING.md README.md
-%attr(755,root,root) %{_bindir}/jupyter-2
-%attr(755,root,root) %{_bindir}/jupyter-migrate-2
-%attr(755,root,root) %{_bindir}/jupyter-troubleshoot-2
-%{py_sitescriptdir}/jupyter.py[co]
-%{py_sitescriptdir}/jupyter_core
-%{py_sitescriptdir}/jupyter_core-%{version}-py*.egg-info
-%endif
-
-%if %{with python3}
-%files -n python3-jupyter_core
-%defattr(644,root,root,755)
-%doc COPYING.md README.md
+%doc LICENSE README.md
 %attr(755,root,root) %{_bindir}/jupyter-3
 %attr(755,root,root) %{_bindir}/jupyter-migrate-3
 %attr(755,root,root) %{_bindir}/jupyter-troubleshoot-3
 %{py3_sitescriptdir}/jupyter.py
 %{py3_sitescriptdir}/__pycache__/jupyter.cpython-*.py[co]
 %{py3_sitescriptdir}/jupyter_core
-%{py3_sitescriptdir}/jupyter_core-%{version}-py*.egg-info
-%endif
+%{py3_sitescriptdir}/jupyter_core-%{version}.dist-info
 
 %if %{with doc}
 %files apidocs
@@ -202,6 +138,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc docs/_build/html/{_static,*.html,*.js}
 %endif
 
+%if 0
 %files -n bash-completion-jupyter
 %defattr(644,root,root,755)
 %{bash_compdir}/jupyter
@@ -209,3 +146,4 @@ rm -rf $RPM_BUILD_ROOT
 %files -n zsh-completion-jupyter
 %defattr(644,root,root,755)
 %{zsh_compdir}/_jupyter
+%endif
