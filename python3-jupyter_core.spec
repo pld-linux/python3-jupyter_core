@@ -7,7 +7,7 @@ Summary:	Core common functionality of Jupyter projects
 Summary(pl.UTF-8):	Główna, wspólna funkcjonalność projektów Jupyter
 Name:		python3-jupyter_core
 Version:	5.7.2
-Release:	1
+Release:	2
 License:	BSD
 Group:		Libraries/Python
 #Source0Download: https://pypi.org/simple/jupyter_core/
@@ -29,6 +29,7 @@ BuildRequires:	python3-traitlets >= 4.0
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 2.044
 %if %{with doc}
+BuildRequires:	python3-sphinx_autodoc_typehints
 BuildRequires:	python3-sphinxcontrib_github_alt
 BuildRequires:	python3-traitlets >= 4.0
 BuildRequires:	sphinx-pdg-3 >= 8
