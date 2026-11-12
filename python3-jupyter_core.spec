@@ -6,35 +6,39 @@
 Summary:	Core common functionality of Jupyter projects
 Summary(pl.UTF-8):	Główna, wspólna funkcjonalność projektów Jupyter
 Name:		python3-jupyter_core
-Version:	5.7.2
-Release:	2
+Version:	5.9.1
+Release:	1
 License:	BSD
 Group:		Libraries/Python
 #Source0Download: https://pypi.org/simple/jupyter_core/
 Source0:	https://files.pythonhosted.org/packages/source/j/jupyter_core/jupyter_core-%{version}.tar.gz
-# Source0-md5:	cd669418f83d14d6a1c2140b5fb36391
+# Source0-md5:	f22161c66a8f83926e5e275bf2c2e8bc
 Patch0:		python-jupyter_core-tests.patch
 Patch1:		python-jupyter_core-completions.patch
-Patch2:		sphinx8.patch
 URL:		https://pypi.org/project/jupyter_core/
 BuildRequires:	python3-build
 BuildRequires:	python3-hatchling >= 1.4
 BuildRequires:	python3-installer
-BuildRequires:	python3-modules >= 1:3.8
+BuildRequires:	python3-modules >= 1:3.10
 %if %{with tests}
 BuildRequires:	python3-pip
+BuildRequires:	python3-platformdirs >= 2.5
 BuildRequires:	python3-pytest
-BuildRequires:	python3-traitlets >= 4.0
+BuildRequires:	python3-traitlets >= 5.3
 %endif
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 2.044
 %if %{with doc}
+BuildRequires:	python3-intersphinx_registry
+BuildRequires:	python3-myst_parser
+BuildRequires:	python3-platformdirs >= 2.5
+BuildRequires:	python3-pydata_sphinx_theme
 BuildRequires:	python3-sphinx_autodoc_typehints
-BuildRequires:	python3-sphinxcontrib_github_alt
-BuildRequires:	python3-traitlets >= 4.0
+BuildRequires:	python3-sphinxcontrib-spelling
+BuildRequires:	python3-traitlets >= 5.3
 BuildRequires:	sphinx-pdg-3 >= 8
 %endif
-Requires:	python3-modules >= 1:3.8
+Requires:	python3-modules >= 1:3.10
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -87,7 +91,6 @@ Dopełnianie parametrów w zsh dla poleceń jupyter.
 %setup -q -n jupyter_core-%{version}
 %patch -P 0 -p1
 %patch -P 1 -p1
-%patch -P 2 -p1
 
 %{__sed} -i -e '1s,/usr/bin/env python,%{__python3},' jupyter_core/troubleshoot.py
 
@@ -95,6 +98,8 @@ Dopełnianie parametrów w zsh dla poleceń jupyter.
 %py3_build_pyproject
 
 %if %{with tests}
+install -d test-home
+HOME=$(pwd)/test-home \
 PYTHONPATH=$(pwd) \
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 \
 %{__python3} -m pytest --ignore=tests/test_paths.py tests

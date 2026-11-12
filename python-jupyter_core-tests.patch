@@ -1,6 +1,6 @@
---- jupyter_core-5.7.2/tests/test_command.py.orig	2020-02-02 01:00:00.000000000 +0100
-+++ jupyter_core-5.7.2/tests/test_command.py	2025-04-22 11:02:21.088549672 +0200
-@@ -196,6 +196,8 @@
+--- jupyter_core-5.9.1/tests/test_command.py.orig
++++ jupyter_core-5.9.1/tests/test_command.py
+@@ -197,6 +197,8 @@
      env = {"PATH": ""}
      if "SYSTEMROOT" in os.environ:  # Windows http://bugs.python.org/issue20614
          env["SYSTEMROOT"] = os.environ["SYSTEMROOT"]
@@ -9,7 +9,7 @@
      if sys.platform == "win32":
          env["PATHEXT"] = ".EXE"
      # This won't work on windows unless
-@@ -221,6 +223,8 @@
+@@ -222,6 +224,8 @@
      env = {"PATH": str(b)}
      if "SYSTEMROOT" in os.environ:  # Windows http://bugs.python.org/issue20614
          env["SYSTEMROOT"] = os.environ["SYSTEMROOT"]

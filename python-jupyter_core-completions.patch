@@ -1,13 +1,13 @@
---- jupyter_core-4.5.0/examples/jupyter-completion.bash.orig	2018-11-07 18:10:19.000000000 +0100
-+++ jupyter_core-4.5.0/examples/jupyter-completion.bash	2019-09-29 13:08:48.722306509 +0200
-@@ -89,4 +89,4 @@
+--- jupyter_core-5.9.1/examples/jupyter-completion.bash.orig
++++ jupyter_core-5.9.1/examples/jupyter-completion.bash
+@@ -94,4 +94,4 @@
      fi
  
  }
 -complete -o default -o nospace -F _jupyter jupyter
 +complete -o default -o nospace -F _jupyter jupyter jupyter-3
---- jupyter_core-4.5.0/examples/completions-zsh.orig	2017-08-05 11:25:59.000000000 +0200
-+++ jupyter_core-4.5.0/examples/completions-zsh	2019-09-29 13:18:28.779164072 +0200
+--- jupyter_core-5.9.1/examples/completions-zsh.orig
++++ jupyter_core-5.9.1/examples/completions-zsh
 @@ -1,4 +1,4 @@
 -#compdef jupyter
 +#compdef jupyter jupyter-3
